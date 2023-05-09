@@ -3,6 +3,7 @@ from pathlib import Path
 from corsheaders.defaults import default_headers
 from urllib.parse import quote
 
+#print('passed here')
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 DJANGO_APPS = [
@@ -37,10 +38,9 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
-MIDDLEWARE = [
+MIDDLEWARE = [   
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -56,6 +56,7 @@ MIDDLEWARE = [
 SITE_ID = int(os.getenv('SITE_ID', 1))
 
 DEBUG = os.getenv('DJANGO_DEBUG', True)
+print(DEBUG)
 SITE_URL = os.getenv('SITE_URL', 'http://localhost:8000')
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-p!1w7j+^j5v8y-@$_9j*8mr-)l#$u=08=c)!=(b1dleci18$7+')
@@ -113,11 +114,11 @@ ADMINS = ()
 LOGIN_REDIRECT_URL = (os.getenv('LOGIN_REDIRECT_URL', '/'))
 # CORS
 
-CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE', True))
+CSRF_COOKIE_SECURE = bool(os.getenv('CSRF_COOKIE_SECURE', False))
 SESSION_COOKIE_SECURE = bool(os.getenv('SESSION_COOKIE_SECURE', True))
 
 # False since we will grab it via universal-cookies
-CSRF_COOKIE_HTTPONLY = bool(os.getenv('CSRF_COOKIE_HTTPONLY', False))
+CSRF_COOKIE_HTTPONLY = bool(os.getenv('CSRF_COOKIE_HTTPONLY', True))
 
 SESSION_COOKIE_HTTPONLY = bool(os.getenv('SESSION_COOKIE_HTTPONLY', True))
 SESSION_COOKIE_SAMESITE = os.getenv('SESSION_COOKIE_SAMESITE', "None")
@@ -125,16 +126,18 @@ CSRF_COOKIE_SAMESITE = os.getenv('CSRF_COOKIE_SAMESITE', "None")
 CORS_ALLOW_CREDENTIALS = bool(os.getenv('CORS_ALLOW_CREDENTIALS', True))
 CORS_ORIGIN_ALLOW_ALL = bool(os.getenv('CORS_ORIGIN_ALLOW_ALL', True))
 CSRF_COOKIE_NAME = os.getenv('CSRF_COOKIE_NAME', "csrftoken")
-CSRF_TRUSTED_ORIGIN = os.getenv('CSRF_TRUSTED_ORIGINS', "localhost:3000")
+CSRF_TRUSTED_ORIGIN = os.getenv('CSRF_TRUSTED_ORIGINS', ["localhost:3000", "13.209.80.164:8000"])
+#print(CSRF_TRUSTED_ORIGIN)
 CSRF_TRUSTED_ORIGIN = CSRF_TRUSTED_ORIGIN.split(',')
 CSRF_TRUSTED_ORIGINS = CSRF_TRUSTED_ORIGIN
+#print(CSRF_TRUSTED_ORIGINS)
 
 #
-# CORS_ALLOW_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS')
-# CORS_ALLOW_ORIGINS = CORS_ALLOW_ORIGINS.split(',')
-# CORS_ALLOWED_ORIGINS = CORS_ALLOW_ORIGINS
+#CORS_ALLOW_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS')
+#CORS_ALLOW_ORIGINS = CORS_ALLOW_ORIGINS.split(',')
+#CORS_ALLOWED_ORIGINS = CORS_ALLOW_ORIGINS
 # #
-# CORS_ALLOW_METHODS = (
+#CORS_ALLOW_METHODS = (
 #     'GET',
 #     'POST',
 #     'PUT',

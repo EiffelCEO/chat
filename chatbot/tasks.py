@@ -86,7 +86,7 @@ def get_pinecone_index(index_name, name_space):
 
 
 @shared_task
-def send_gpt_request(message_list, name_space):
+def send_gpt_request(message_list, name_space, pinecone_idx):
     try:
 
         # new_messages_list = []
@@ -99,7 +99,7 @@ def send_gpt_request(message_list, name_space):
         # base_index = get_faiss_index("buffer_salaries")
 
         # Load the Pinecone index
-        base_index = get_pinecone_index(PINECONE_INDEX_NAME, name_space)
+        base_index = get_pinecone_index(pinecone_idx, name_space)
 
         if base_index:
             # Add extra text to the content of the last message

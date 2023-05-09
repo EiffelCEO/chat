@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from site_settings.models import PineconeIndex
 import secrets
 
 
@@ -45,9 +46,9 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_from_user = models.BooleanField(default=True)
     in_reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='replies')
-
+    pinecone_idx = models.ForeignKey(PineconeIndex, null=True, blank=False, on_delete=models.SET_NULL)
     class Meta:
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Message {self.id} - {self.conversation}"
+        return f"Message {self.id} {self.pinecone_idx} - {self.conversation}"

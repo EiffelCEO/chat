@@ -143,9 +143,14 @@ class MessageCreate(generics.CreateAPIView):
         #         message_list.append(AIMessage(content=msg.content))
 
         name_space = User.objects.get(id=self.request.user.id).username
+        pinecone_idx = self.request.data.get("pinecone_idx")
+        if pinecone_idx is None or pinecone_idx ==  '':
+            pinecone_idx = 3
+
+        print("Pinecone index is: ", pinecone_idx)
 
         # Call the Celery task to get a response from GPT-3
-        task = send_gpt_request.apply_async(args=(message_list, name_space))
+        task = send_gpt_request.apply_async(args=(message_list, name_space, pinecone_idx))
         print(message_list)
         response = task.get()
         return [response, conversation.id, messages[0].id]

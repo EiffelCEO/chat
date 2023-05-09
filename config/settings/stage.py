@@ -1,5 +1,5 @@
 from .common import *  # noqa
-
+from .key_values import *
 ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS += ["gunicorn", ]
 

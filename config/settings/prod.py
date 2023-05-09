@@ -1,6 +1,6 @@
 import os
 from .common import *  # noqa
-
+#from .key_values import *
 # Site
 # https://docs.djangoproject.com/en/2.0/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["*"]
