@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import SiteSetting, Language, Ad
+from .models import SiteSetting, Language, Ad, PineconeIndex
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -30,3 +30,13 @@ class AdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ad
         fields = ['title', 'description', 'image']
+
+
+class PineconeIndexSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the PineconeIndex model.
+    """
+
+    class Meta:
+        model = PineconeIndex
+        fields = ['name', 'index_id']

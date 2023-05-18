@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import SiteSettingList, LanguageList, AdList
+from .views import SiteSettingList, LanguageList, AdList, PineconeIndexList
 
 app_name = 'site_settings'
 
@@ -12,4 +12,7 @@ urlpatterns = [
 
     # Ads list endpoint
     path('ads/', AdList.as_view(), name='ads-list'),
+
+    # Pinecone Idx list endpoint
+    path('pinecone/', PineconeIndexList.as_view(), name='pinecone-index'),
 ]

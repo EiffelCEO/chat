@@ -2,6 +2,9 @@ from .common import *
 from .key_values import *
 DEBUG = False
 
+
+USE_X_FORWARDED_HOST = True
+
 # CORS
 CSRF_COOKIE_SECURE=False
 SESSION_COOKIE_SECURE=False
@@ -14,8 +17,9 @@ CORS_ALLOW_CREDENTIALS=True
 CORS_ORIGIN_ALLOW_ALL=True
 CSRF_COOKIE_NAME="csrftoken"
 CORS_ALLOWED_ORIGINS=["http://api.ssaptalk.com", "https://api.ssaptalk.com","http://127.0.0.1:3000","http://localhost:8000","http://52.78.102.248:8000","http://localhost:3000","http://0.0.0.0:8000", "http://ssaptalk.com", "https://ssaptalk.com"]
-CSRF_TRUSTED_ORIGINS=["http://localhost:8000","http://ssaptalk.com","http://127.0.0.1:3000","http://52.78.102.248:8000","http://0.0.0.0:8000","http://localhost:3000","http://*.0.0.0.0:8000","http://*.0.0.0.0","http://*.52.78.102.248:8000","http://*.52.78.102.248"]
-#print("Debug is", DEBUG)
+CSRF_TRUSTED_ORIGINS=["http://localhost:8000","http://ssaptalk.com","https://ssaptalk.com","http://127.0.0.1:3000","http://52.78.102.248:8000","http://0.0.0.0:8000","http://localhost:3000","http://*.0.0.0.0:8000","http://*.0.0.0.0","http://*.52.78.102.248:8000","http://*.52.78.102.248"]
+print("Auth key google: ", SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET)
+print(SOCIAL_AUTH_GOOGLE_OAUTH2_KEY)
 ALLOWED_HOSTS = ["*"]
 # DATABASES = {
 #     'default': {

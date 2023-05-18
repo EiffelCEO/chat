@@ -46,7 +46,7 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_from_user = models.BooleanField(default=True)
     in_reply_to = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='replies')
-    pinecone_idx = models.ForeignKey(PineconeIndex, null=True, blank=False, on_delete=models.SET_NULL)
+    pinecone_idx = models.TextField()
     class Meta:
         ordering = ['-created_at']
 

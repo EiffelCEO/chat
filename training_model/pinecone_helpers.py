@@ -1,6 +1,7 @@
 import os
 import pinecone
 import requests
+import PyPDF2
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlsplit
 import mimetypes
@@ -8,11 +9,12 @@ from django.conf import settings
 from langchain.document_loaders import (
     CSVLoader,
     UnstructuredWordDocumentLoader,
-    PyPDFLoader,
+    PyPDFium2Loader,
     WebBaseLoader,
 )
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
+from langchain.text_splitter import CharacterTextSplitter
 
 OPENAI_API_KEY = settings.OPENAI_API_KEY
 PINECONE_API_KEY = settings.PINECONE_API_KEY
@@ -105,12 +107,31 @@ class DocumentLoaderFactory:
             mime_type, _ = mimetypes.guess_type(file_path_or_url)
 
             if mime_type == 'application/pdf':
-                return PyPDFLoader(file_path_or_url)
+                return PyPDFium2Loader(file_path_or_url)
             elif mime_type == 'text/csv':
                 return CSVLoader(file_path_or_url)
             elif mime_type in ['application/msword',
                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document']:
                 return UnstructuredWordDocumentLoader(file_path_or_url)
+            else:
+                raise ValueError(f"Unsupported file type: {mime_type}")
+
+    @staticmethod
+    def get_splitter(file_path_or_url):
+        if file_path_or_url.startswith("http://") or file_path_or_url.startswith("https://"):
+            handle_website = URLHandler()
+            return CharacterTextSplitter(separator = "\n\n", chunk_size=1000, chunk_overlap=200)
+        else:
+            mime_type, _ = mimetypes.guess_type(file_path_or_url)
+
+            if mime_type == 'application/pdf':
+                print("Pdf detected")
+                return CharacterTextSplitter.from_tiktoken_encoder(chunk_size=1000, chunk_overlap=200)
+            elif mime_type == 'text/csv':
+                return CharacterTextSplitter.from_tiktoken_encoder(chunk_size=1000, chunk_overlap=200)
+            elif mime_type in ['application/msword',
+                               'application/vnd.openxmlformats-officedocument.wordprocessingml.document']:
+                return CharacterTextSplitter.from_tiktoken_encoder(chunk_size=1000, chunk_overlap=200)
             else:
                 raise ValueError(f"Unsupported file type: {mime_type}")
 
@@ -141,10 +162,23 @@ def build_or_update_pinecone_index(file_path, index_name, name_space):
     """
     pinecone_index_manager = PineconeIndexManager(PineconeManager(PINECONE_API_KEY, PINECONE_ENVIRONMENT), index_name)
     loader = DocumentLoaderFactory.get_loader(file_path)
-    pages = loader.load_and_split()
-
+    splitter = DocumentLoaderFactory.get_splitter(file_path)
+    text = loader.load()
+    #print(text[0].get_text())
+    #print(text[0])
+    text_accum = '\n\n'
+    for page in text:
+        text_accum.join(page.page_content)
+    #print(text_accum)
+    #print(text[0].page_content)
+    pages = splitter.split_documents(text)
+    
     if pinecone_index_manager.index_exists():
         print("Updating the model")
+        print("Namespace is: ", PINECONE_NAMESPACE_NAME)
+        print("Embedding is:", embeddings)
+        print("Index is: ", pinecone_index_manager.index_name)
+        print("manager: ", pinecone_index_manager.index_name)
         pinecone_index = Pinecone.from_documents(pages, embeddings, index_name=pinecone_index_manager.index_name,
                                                  namespace=PINECONE_NAMESPACE_NAME)
 
@@ -155,3 +189,4 @@ def build_or_update_pinecone_index(file_path, index_name, name_space):
                                                  index_name=pinecone_index_manager.index_name,
                                                  namespace=PINECONE_NAMESPACE_NAME)
     return pinecone_index
+

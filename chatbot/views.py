@@ -145,7 +145,7 @@ class MessageCreate(generics.CreateAPIView):
         name_space = User.objects.get(id=self.request.user.id).username
         pinecone_idx = self.request.data.get("pinecone_idx")
         if pinecone_idx is None or pinecone_idx ==  '':
-            pinecone_idx = 3
+            pinecone_idx = 'chat'
 
         print("Pinecone index is: ", pinecone_idx)
 

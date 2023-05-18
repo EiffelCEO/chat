@@ -18,6 +18,8 @@ from oauth2_provider.models import AccessToken, RefreshToken
 from datetime import timedelta
 from django.contrib.auth.hashers import make_password
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 User = get_user_model()
 
@@ -83,13 +85,13 @@ class LoginView(APIView):
 
         return Response(context, status=status.HTTP_200_OK)
 
-
+@method_decorator(csrf_exempt,name="dispatch")
 class GoogleLoginView(APIView):
     """
     View for Google login.
     """
     permission_classes = [permissions.AllowAny]
-
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         user = request.user
         if user.is_authenticated:
